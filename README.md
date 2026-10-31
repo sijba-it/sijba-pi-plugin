@@ -23,10 +23,14 @@ Pi is a whole Node.js toolchain (global npm install), not a lightweight
 Python dependency — packaging it in its own image avoids clashing with
 anything else on the host, unlike running it from a shared venv/PATH.
 
+The image is built by GitHub Actions and published to
+`ghcr.io/sijba-it/sijba-pi-plugin` (multi-arch, `:latest` plus a timestamp tag):
+
 ```bash
-cd sijba-pi-plugin
-docker build -t sijba-pi:latest .
+docker pull ghcr.io/sijba-it/sijba-pi-plugin:latest
 ```
+
+To build locally instead: `docker build -t ghcr.io/sijba-it/sijba-pi-plugin:latest .`
 
 ## Quick start (standalone, outside the controller)
 
@@ -42,7 +46,7 @@ docker run --rm \
   -e AI_API_NAME=openrouter \
   -e AI_API_KEY=your-openrouter-key \
   -e HOME=/work \
-  sijba-pi:latest
+  ghcr.io/sijba-it/sijba-pi-plugin:latest
 ```
 
 `HOME=/work` matters: it's where pi keeps its own state
@@ -61,14 +65,13 @@ provider-specific env var pi expects (`openrouter` → `OPENROUTER_API_KEY`,
 ## Managed by the controller
 
 ```
-controller catalog add pi --docker sijba-pi:latest --api openrouter --env HOME=/work
+controller catalog add pi --docker ghcr.io/sijba-it/sijba-pi-plugin:latest --api openrouter --env HOME=/work
 ```
 
 (Already registered in this controller's `catalog.json`.) `ensure_fetched`
-tries `docker pull` first but falls back to a local image if the pull
-fails and the image already exists — so a locally-built, never-pushed
-image (as above) works fine on a single-host setup; push it to a registry
-instead if you need this on more than one host.
+runs `docker pull` on spawn and falls back to a local image if the pull
+fails and the image already exists. The GHCR package must be public (or the
+host `docker login ghcr.io`-ed with a token that has `read:packages`).
 
 ## In-channel commands
 
