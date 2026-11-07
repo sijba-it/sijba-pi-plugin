@@ -38,7 +38,7 @@ To build locally instead: `docker build -t ghcr.io/sijba-it/sijba-pi-plugin:late
 docker run --rm \
   -v /path/to/project:/work \
   -v /path/to/registry.json:/registry.json \
-  -e SIJBA_URL=https://sijba.edv-bartl.at \
+  -e SIJBA_URL=https://<account>.sijba.eu \
   -e SIJBA_TOKEN=your-token-here \
   -e PROJECT_NAME=my-project \
   -e WORK_DIR=/work \
